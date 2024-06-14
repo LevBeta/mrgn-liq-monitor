@@ -1,7 +1,7 @@
 use crate::influx::{Influx, LiquidationTransaction};
 use chrono::Utc;
 use futures::StreamExt;
-use solana_sdk::{signature::Signature, transaction};
+use solana_sdk::{inflation, signature::Signature, transaction};
 use solana_transaction_status::TransactionWithStatusMeta;
 use std::collections::HashMap;
 use yellowstone_grpc_client::GeyserGrpcClient;
@@ -104,6 +104,7 @@ impl Listener {
                         .first()
                         .unwrap()
                         .to_string();
+                    /* 
                     let is_not_liquidation = !transaction
                         .meta
                         .log_messages
@@ -116,7 +117,18 @@ impl Listener {
                         })
                         .collect::<Vec<_>>()
                         .is_empty();
-
+                    */
+                    let messages = transaction.meta.log_messages.unwrap_or_default();
+                    for message in messages {
+                        if message.contains("LendingAccountLiquidate") {
+                            return Ok(Some(LiquidationTransaction {
+                                time: Utc::now().timestamp_nanos() as u64,
+                                signer,
+                                signature,
+                            }));
+                        }
+                    }
+                    /* 
                     if !is_not_liquidation {
                         return Ok(Some(LiquidationTransaction {
                             time: Utc::now().timestamp_nanos() as u64,
@@ -124,6 +136,7 @@ impl Listener {
                             signature,
                         }));
                     };
+                    */
                 }
                 return Ok(None);
             }
