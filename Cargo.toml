@@ -1,0 +1,18 @@
+[package]
+name = "mrgn-liq-monitor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.86"
+solana-sdk = "1.16"
+yellowstone-grpc-client = "1.12"
+yellowstone-grpc-proto = "1.11"
+tokio = { version = "1.38.0", features = ["macros", "rt", "rt-multi-thread"] }
+futures = "0.3.30"
+chrono = "0.4.38"
+influxdb2 = "0.3"
+influxdb2-structmap = "0.2"
+influxdb2-derive = "0.1.1"
+num-traits = "0.2"
+solana-transaction-status = "1.16"
